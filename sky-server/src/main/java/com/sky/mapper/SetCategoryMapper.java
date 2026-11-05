@@ -4,6 +4,7 @@ import com.sky.anno.AutoFill;
 import com.sky.dto.CategoryDTO;
 import com.sky.entity.Category;
 import com.sky.enumeration.OperationType;
+import com.sky.vo.OptionVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface SetCategoryMapper {
 
     @AutoFill(value = OperationType.UPDATE) // 切面编程
     public void update(Category category);
+
+    public List<Category> list(Integer type);
 }

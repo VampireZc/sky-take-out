@@ -55,4 +55,7 @@
         </where>
         order by create_time desc
     </select>
+    <select id="list" resultType="com.sky.entity.Category">
+        select * from category where type = #{type}
+    </select>
 </mapper>

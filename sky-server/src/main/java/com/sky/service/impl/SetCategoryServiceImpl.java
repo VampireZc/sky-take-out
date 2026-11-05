@@ -10,6 +10,7 @@ import com.sky.entity.Category;
 import com.sky.mapper.SetCategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetCategoryService;
+import com.sky.vo.OptionVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,10 @@ public class SetCategoryServiceImpl implements SetCategoryService {
     public void updateStatus(Long id, Integer status) {
         Category category = Category.builder().id(id).status(status).build();
         setCategoryMapper.update(category);
+    }
+
+    @Override
+    public List<Category> list(Integer type) {
+        return setCategoryMapper.list(type);
     }
 }

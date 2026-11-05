@@ -6,9 +6,12 @@ import com.sky.entity.Category;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.SetCategoryService;
+import com.sky.vo.OptionVo;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/category")
@@ -49,6 +52,13 @@ public class SetCategoryController {
     public Result<String> updateStatus(@RequestParam Long id, @PathVariable Integer status) {
         setCategoryService.updateStatus(id, status);
         return Result.success("修改分类状态成功");
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "分类列表")
+    public Result<List<Category>> list(@RequestParam Integer type) {
+        List<Category> categoryList = setCategoryService.list(type);
+        return Result.success(categoryList);
     }
 
 }
