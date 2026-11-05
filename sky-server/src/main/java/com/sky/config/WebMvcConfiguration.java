@@ -1,14 +1,19 @@
 package com.sky.config;
 
 import com.sky.interceptor.JwtTokenAdminInterceptor;
+import com.sky.json.JacksonObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * 配置类，注册web层相关组件
@@ -50,4 +55,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     // 说明：不再手写 /doc.html 与 /webjars/** 的静态资源映射。
     // springdoc 自动配置已注册这些映射；且改用 WebMvcConfigurer 后，
     // Spring Boot 的 WebMvcAutoConfiguration 仍会生效（默认会映射 META-INF/resources）。
+
+    // 增加消息转换器，用来处理日期格式
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        JacksonObjectMapper mapper = new JacksonObjectMapper();
+        converter.setObjectMapper(mapper);
+        converters.add(0, converter);
+    }
 }

@@ -8,6 +8,7 @@ import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -15,6 +16,7 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import lombok.Builder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,27 +83,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(pass);
         // 设置默认值
         employee.setStatus(StatusConstant.ENABLE);
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
 
-        // 获取当前登录用户id
-        Long currentId = BaseContext.getCurrentId();
-        employee.setCreateUser(currentId);
-        employee.setUpdateUser(currentId);
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        Long currentId = BaseContext.getCurrentId();
+//        employee.setCreateUser(currentId);
+//        employee.setUpdateUser(currentId);
 
         employeeMapper.insert(employee);
     }
 
     /**
      * 员工分页查询
-     *
-     * @param name
-     * @param page
-     * @param pageSize
+     * @param employeePageQueryDTO
      * @return
      */
     @Override
-    public PageResult pageQuery(String name, Integer page, Integer pageSize) {
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+        int page = employeePageQueryDTO.getPage();
+        int pageSize = employeePageQueryDTO.getPageSize();
+        String name = employeePageQueryDTO.getName();
+
         PageHelper.startPage(page, pageSize);
         List<Employee> list = employeeMapper.query(name);
         Page<Employee> p = (Page<Employee>) list;
@@ -118,20 +120,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
         // 设置更新时间
-        employee.setUpdateTime(LocalDateTime.now());
+        // employee.setUpdateTime(LocalDateTime.now());
         // 设置更新人
-        employee.setUpdateUser(BaseContext.getCurrentId());
+        // employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);
     }
 
+    /**
+     * 根据id查询员工
+     *
+     * @param id
+     * @return
+     */
     @Override
     public EmployeeDTO getById(Long id) {
         return employeeMapper.getById(id);
     }
 
+    /**
+     * 根据id修改员工的登录状态
+     *
+     * @param status
+     * @param id
+     */
     @Override
     public void updateStatus(Integer status, Long id) {
-        employeeMapper.updateStatus(status, id);
+        // 使用builder构建
+        Employee employee = Employee.builder().status(status).id(id).build();
+        employeeMapper.update(employee);
     }
 
 }
