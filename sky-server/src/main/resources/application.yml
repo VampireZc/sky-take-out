@@ -8,13 +8,13 @@ spring:
     allow-circular-references: true
   application:
     name: sky-take-out
-  #mysql 连接配置
+  #mysql 连接配置（主机/库名/账号/密码见 application-dev.yml）
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sky_take_out
-    username: root
-    password: root123456
+    driver-class-name: ${sky.datasource.driver-class-name}
+    url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}
+    username: ${sky.datasource.username}
+    password: ${sky.datasource.password}
   # JSON 序列化：值为 null 的字段不返回给前端
   jackson:
     default-property-inclusion: non_null
@@ -46,15 +46,13 @@ logging:
 
 sky:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: itcast
+    # 设置jwt签名加密时使用的秘钥（admin-secret-key 见 application-dev.yml）
     # 设置jwt过期时间
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
 
-    # 小程序
-    user-secret-key: itheima
+    # 小程序（user-secret-key 见 application-dev.yml）
     user-ttl: 7200000
     user-token-name: authentication
 
