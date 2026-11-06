@@ -5,6 +5,7 @@ import com.sky.dto.DishDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.enumeration.OperationType;
+import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 
@@ -21,7 +22,9 @@ public interface DishMapper {
 
     public DishDTO getDish(Long id);
 
-    public List<DishFlavor> getDishFlavors(Long id);
+    public List<DishVO> getDishCategoryList(Long categoryId);
+
+    public List<DishFlavor> getDishFlavors(Long dishId);
 
     @AutoFill(value = OperationType.INSERT)
     public void updateDish(Dish dish);

@@ -54,17 +54,18 @@
         delete from dish_flavor where dish_id = #{dishId}
     </delete>
     <select id="pageQuery" resultType="com.sky.entity.Dish">
-        select * from dish
+        select t1.*, t2.name as category_name from dish t1, category t2
         <where>
             <if test="name != null and name != ''">
-                name like CONCAT('%', #{name}, '%')
+                name t1.like CONCAT('%', #{name}, '%')
             </if>
             <if test="categoryId != null">
-                and category_id = #{categoryId}
+                and t1.category_id = #{categoryId}
             </if>
             <if test="status != null">
-                and status = #{status}
+                and t1.status = #{status}
             </if>
+            and t1.category_id = t2.id
         </where>
         order by update_time desc
     </select>
@@ -73,5 +74,8 @@
     </select>
     <select id="getDishFlavors" resultType="com.sky.entity.DishFlavor">
         select * from dish_flavor where dish_id = #{dishId}
+    </select>
+    <select id="getDishCategoryList" resultType="com.sky.vo.DishVO">
+        select * from dish where category_id = #{categoryId}
     </select>
 </mapper>

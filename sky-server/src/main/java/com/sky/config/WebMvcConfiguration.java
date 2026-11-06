@@ -1,6 +1,7 @@
 package com.sky.config;
 
 import com.sky.interceptor.JwtTokenAdminInterceptor;
+import com.sky.interceptor.JwtTokenUserInterceptor;
 import com.sky.json.JacksonObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -25,6 +26,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
+    @Autowired
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
+
     /**
      * 注册自定义拦截器
      *
@@ -36,6 +40,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
+
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login")
+                .excludePathPatterns("/user/shop/status");
     }
 
     /**
@@ -59,9 +68,12 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     // 增加消息转换器，用来处理日期格式
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         JacksonObjectMapper mapper = new JacksonObjectMapper();
-        converter.setObjectMapper(mapper);
-        converters.add(0, converter);
+        for (HttpMessageConverter<?> converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter jacksonConverter) {
+                jacksonConverter.setObjectMapper(mapper);
+                return;
+            }
+        }
     }
 }

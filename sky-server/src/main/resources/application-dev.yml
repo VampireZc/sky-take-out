@@ -13,3 +13,13 @@ sky:
     access-key-secret: ${SKY_ALIOSS_ACCESS_KEY_SECRET}
     access-key-id: ${SKY_ALIOSS_ACCESS_KEY_ID}
     bucket-name: java-spring-zc
+
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 10
+
+  wechat:
+    appid: wx655610cef1a184e8
+    secret: c615fbab250636071706149927770310

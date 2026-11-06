@@ -10,6 +10,7 @@ import com.sky.entity.DishFlavor;
 import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,21 @@ public class DishServiceImpl implements DishService {
                 .map(Integer::parseInt)
                 .toArray(Integer[]::new);
         dishMapper.deleteDishByIds(idArray);
+    }
+
+    @Override
+    public void updateDishStatus(Integer status, String id) {
+        Dish dish = Dish.builder().status(status).id(Long.valueOf(id)).build();
+        dishMapper.updateDish(dish);
+    }
+
+    @Override
+    public List<DishVO> getDishCategoryList(Long categoryId) {
+        List<DishVO> list = dishMapper.getDishCategoryList(categoryId);
+        list.forEach(dish -> {
+            List<DishFlavor> flavors = dishMapper.getDishFlavors(dish.getId());
+            dish.setFlavors(flavors);
+        });
+        return list;
     }
 }
