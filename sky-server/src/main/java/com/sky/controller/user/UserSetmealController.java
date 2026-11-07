@@ -6,6 +6,7 @@ import com.sky.service.SetmealService;
 import com.sky.vo.DishItemVO;
 import com.sky.vo.DishVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,8 @@ public class UserSetmealController {
     @Autowired
     private SetmealService setmealService;
     @GetMapping("/list")
+    // 命中则返回缓存，未命中则返回查询结果并缓存
+    @Cacheable(cacheNames = "setmealCache", key = "#categoryId")
     public Result<List<Setmeal>> getById(Long categoryId) {
         List<Setmeal> setmealVO = setmealService.list(categoryId);
         return Result.success(setmealVO);
