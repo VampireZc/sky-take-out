@@ -27,6 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -71,6 +72,8 @@ public class OrderServiceImpl implements OrderService {
         if (adList == null || adList.isEmpty()){
             throw new ShoppingCartBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
         }
+        AddressBook book = addressMapper.getById(ordersSubmitDTO.getAddressBookId());
+        String address = book.getProvinceName() + book.getCityName() + book.getDistrictName() + book.getDetail();
 
         // 新增订单
         Orders orders = new Orders();
@@ -82,6 +85,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setPhone(adList.get(0).getPhone());
         orders.setConsignee(adList.get(0).getConsignee());
         orders.setUserId(currentId);
+        orders.setAddress(address);
         orderMapper.submitOrder(orders);
 
         // 向订单明细表插入数据
@@ -233,4 +237,43 @@ public class OrderServiceImpl implements OrderService {
 
         shoppingCartMapper.insertBatch(cartList);
     }
+
+    @Override
+    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        int page = ordersPageQueryDTO.getPage();
+        int pageSize = ordersPageQueryDTO.getPageSize();
+        PageHelper.startPage(page, pageSize);
+        Page<Orders> p = orderMapper.pageQuery(ordersPageQueryDTO);
+        // 需要返回订单菜品信息，自定义OrderVO响应结果
+        List<OrderVO> orderVOS = getOrderVOList(p);
+        return new PageResult(p.getTotal(), orderVOS);
+    }
+
+    private List<OrderVO> getOrderVOList(Page<Orders> page) {
+        ArrayList<OrderVO> list = new ArrayList<>();
+        List<Orders> ordersList = page.getResult();
+        if (!CollectionUtils.isEmpty(ordersList)){ // 判断订单列表是否为空
+            for (Orders orders : ordersList){
+                OrderVO vo = new OrderVO();
+                BeanUtils.copyProperties(orders, vo);
+                // 组装菜品数量信息
+                String orderDishes = getOrderDishesStr(orders);
+                vo.setOrderDishes(orderDishes);
+                list.add(vo);
+            }
+        }
+        return list;
+    }
+
+    private String getOrderDishesStr(Orders orders) {
+        List<OrderDetail> orderDetailList = orderMapper.getOrderDetail(orders.getId());
+        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）
+        List<String> orderDishList = orderDetailList.stream().map(x -> {
+            String orderDish = x.getName() + "*" + x.getNumber() + ";";
+            return orderDish;
+        }).collect(Collectors.toList());
+        // 将该订单对应的所有菜品信息拼接在一起
+        return String.join("", orderDishList);
+    }
+
 }
