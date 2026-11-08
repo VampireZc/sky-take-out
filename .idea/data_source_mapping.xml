@@ -2,10 +2,12 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/AddressMapper.java" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/OrderMapper.java" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/SetmealMapper.java" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/ShoppingCartMapper.java" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/resources/mapper/AddressMapper.xml" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/resources/mapper/OrderMapper.xml" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/resources/mapper/UserMapper.xml" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
     <file url="file://$PROJECT_DIR$/../../../study/waimai/资料/day01/数据库/sky.sql" value="32abe170-f620-4b29-b101-2b5b3ce2813a" />
   </component>
 </project>
