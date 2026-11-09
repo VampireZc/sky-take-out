@@ -54,4 +54,7 @@ public interface OrderService {
 
     // 后台订单完成
     void complete(Long id);
+
+    // 客户催单
+    void reminder(Long id);
 }

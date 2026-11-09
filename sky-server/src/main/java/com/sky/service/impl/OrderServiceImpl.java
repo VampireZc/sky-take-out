@@ -20,6 +20,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.webSocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +53,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -109,6 +114,14 @@ public class OrderServiceImpl implements OrderService {
                 .orderAmount(orders.getAmount())
                 .build();
 
+        // 通过webSocket推送消息理想情况应该paySuccess之后推送
+        HashMap map = new HashMap();
+        map.put("type", 1);
+        map.put("orderId", build.getId());
+        map.put("content","订单号：" + build.getOrderNumber());
+        String s = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(s);
+
         return build;
     }
 
@@ -150,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
     }
 
     @Override
@@ -398,6 +412,21 @@ public class OrderServiceImpl implements OrderService {
         orders.setDeliveryTime(LocalDateTime.now());
 
         orderMapper.update(orders);
+    }
+
+    @Override
+    public void reminder(Long id) {
+        Orders build = orderMapper.getById(id);
+
+        if (build == null || build.getStatus().equals(Orders.CONFIRMED)){
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        HashMap map = new HashMap();
+        map.put("type", 2);
+        map.put("orderId", build.getId());
+        map.put("content","订单号：" + build.getNumber());
+        String s = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(s);
     }
 
 

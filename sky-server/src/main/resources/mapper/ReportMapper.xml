@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.ReportMapper">
+    <select id="getTurnover" resultType="java.lang.Double">
+        select sum(amount) from orders
+        <where>
+            <if test="beginTime != null and endTime != null">
+               and order_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="getTopList" resultType="java.util.Map">
+        select
+            sum(t1.number) as count,
+            t1.name
+        from order_detail t1, orders t2
+        where t1.order_id = t2.id and t2.status = 5
+        <if test="beginTime != null and endTime != null ">
+            and t2.order_time between #{beginTime} and #{endTime}
+        </if>
+        group by t1.name
+        order by count desc
+        limit 0,10;
+    </select>
+</mapper>

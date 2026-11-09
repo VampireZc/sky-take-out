@@ -7,6 +7,7 @@ import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,4 +36,10 @@ public interface OrderMapper {
     Integer countStatus(Integer toBeConfirmed);
 
     List<Map<String, Object>> getSelfOrderCount();
+
+    @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
+    List<Orders> PendingPay(Integer status, LocalDateTime orderTime);
+
+    @Select("select * from orders where status = 4")
+    List<Orders> getPendingCompleteOrder();
 }
