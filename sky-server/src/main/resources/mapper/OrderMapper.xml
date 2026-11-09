@@ -68,4 +68,16 @@
         </where>
         order by order_time desc
     </select>
+    <select id="getSelfOrderCount" resultType="java.util.Map">
+        select
+            count(*) as count,
+            (
+                case status
+                    when 2 then 'toBeConfirmed'
+                    when 3 then 'confirmed'
+                    when 4 then 'deliveryInProgress'
+                    end
+                ) as statusKey
+        from orders where status in (2,3,4) group by status;
+    </select>
 </mapper>

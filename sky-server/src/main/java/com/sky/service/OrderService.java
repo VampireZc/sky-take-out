@@ -1,13 +1,13 @@
 package com.sky.service;
 
-import com.sky.dto.OrdersDTO;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+
+import java.util.List;
 
 public interface OrderService {
     // 提交订单
@@ -33,4 +33,25 @@ public interface OrderService {
 
     // 后台查询订单
     PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    // 订单统计
+    OrderStatisticsVO statisticsCount();
+
+    // 自己组装数据
+    OrderStatisticsVO getSelfCount();
+
+    // 后台订单接单
+    void confirm(OrdersConfirmDTO ordersConfirmDTO);
+
+    // 后台订单拒绝接单
+    void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception;
+
+    // 后台订单取消
+    void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception;
+
+    // 后台订单派送
+    void delivery(Long id);
+
+    // 后台订单完成
+    void complete(Long id);
 }
