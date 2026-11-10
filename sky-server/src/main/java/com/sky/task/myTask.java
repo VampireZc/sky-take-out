@@ -19,7 +19,7 @@ public class myTask {
 
     // 超时15分钟未支付取消订单
     // 每分钟执行一次
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void cancelOrder() {
         // 查询待支付且超时的订单
         LocalDateTime time = LocalDateTime.now().minusMinutes(15);

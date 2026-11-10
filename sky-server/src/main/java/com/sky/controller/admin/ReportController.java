@@ -7,6 +7,7 @@ import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,6 +63,22 @@ public class ReportController {
         SalesTop10ReportVO salesTop10ReportVO = reportService.getTopList(begin, end);
         return Result.success(salesTop10ReportVO);
 
+    }
+
+    @GetMapping("/export")
+    @Operation(summary = "导出数据")
+    public void exportExcel(HttpServletResponse response){
+        reportService.exportExcel(response);
+    }
+
+    /**
+     * 与 /export 返回同样的数据，但底层改用 EasyExcel 实现：
+     * 不需要读取 xlsx 模板，也不需要手动操作 Row/Cell，数据填充全部由注解 + 反射完成
+     */
+    @GetMapping("/exportEasyExcel")
+    @Operation(summary = "使用 EasyExcel 导出运营数据报表")
+    public void exportExcelByEasyExcel(HttpServletResponse response){
+        reportService.exportExcelByEasyExcel(response);
     }
 
 }

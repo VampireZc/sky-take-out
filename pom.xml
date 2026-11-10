@@ -39,7 +39,9 @@
         <aspectj>1.9.21</aspectj>
         <jjwt>0.9.1</jjwt>
         <jaxb-api>2.3.1</jaxb-api>
-        <poi>3.16</poi>
+        <!-- POI 版本需与 easyexcel 3.3.4 内部依赖的 4.1.2 保持一致，否则会被 dependencyManagement 强制降级导致运行时 NoSuchMethodError -->
+        <poi>4.1.2</poi>
+        <easyexcel>3.3.4</easyexcel>
     </properties>
 
     <dependencies>
@@ -140,6 +142,12 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi}</version>
+            </dependency>
+            <!-- easyexcel：基于 POI 封装的 Excel 读写工具，注解驱动、流式读写、内存占用低 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel}</version>
             </dependency>
             <!--微信支付-->
             <dependency>
